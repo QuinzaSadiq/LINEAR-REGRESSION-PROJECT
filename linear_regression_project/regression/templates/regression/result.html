@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <title>Linear Regression Results</title>
+    <style>
+      /* General Styles */
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: #003049;
+        margin: 0;
+        padding: 0;
+        color: #444;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1,
+      h2,
+      h3 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+      }
+      h1 {
+        font-size: 2.5em;
+        color: #d62828;
+      }
+      h2 {
+        font-size: 2em;
+        color: #fcbf49;
+      }
+      h3 {
+        font-size: 1.5em;
+        color: #eae2b7;
+      }
+      p {
+        font-size: 1.2em;
+        margin: 10px 0;
+        text-align: center;
+      }
+
+      /* Scatter Plot Styling */
+      .plot-container {
+        margin: 40px 0;
+      }
+      img {
+        width: 50%;
+        height: auto;
+        display: inline-block;
+        margin: 20px;
+        border: 3px solid #264653;
+        border-radius: 10px;
+        margin-left: 300px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Table Styles */
+      table {
+        width: 100%;
+        margin: 40px auto;
+        border-collapse: collapse;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        background-color: white;
+      }
+      th,
+      td {
+        padding: 15px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        font-size: 1.1em;
+      }
+      th {
+        background-color: #f77f00;
+        color: white;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+      td {
+        background-color: #f9f9f9;
+      }
+      tr:hover td {
+        background-color: #f1f1f1;
+      }
+      tbody tr:nth-child(even) {
+        background-color: #f4f4f9;
+      }
+
+      /* Button and Footer */
+      .footer {
+        margin-top: 40px;
+        text-align: center;
+      }
+      .btn-download {
+        background-color: #d62828;
+        color: white;
+        padding: 12px 24px;
+        font-size: 1.1em;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+      .btn-download:hover {
+        background-color: #27a39d;
+      }
+      .missing-values-container {
+        text-align: center;
+        margin-top: 30px;
+        margin-bottom: 30px;
+      }
+      .missing-values-box {
+        background-color: #cbecff;
+        color: #2fbad3;
+        padding: 15px;
+        border-radius: 10px;
+        display: inline-block;
+        font-size: 1.5em;
+        font-weight: bold;
+        border: 2px solid #2fc0d3;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      }
+    
+  .metrics-container {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    text-align: center;
+    margin-left: 70px;
+  }
+
+  .metric-box {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 20px;
+    width: 45%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .metric-box h3 {
+    font-size: 1.8em;
+    color: #0f5ea7;
+    margin-bottom: 15px;
+  }
+
+  .metric-box p {
+    font-size: 1.5em;
+    color: #444;
+    font-weight: bold;
+  }
+
+  .mse-box {
+    background-color: #eca03c;
+  }
+
+  .r2-box {
+    background-color: #9bd855;
+  }
+
+  .metric-box i {
+    margin-right: 10px;
+    font-size: 1.2em;
+  }
+</style>
+
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>SIMPLE LINEAR REGRESSION</h1>
+
+      <!-- Dataset Head Table -->
+      <h2>Dataset Head</h2>
+      <table>
+        <thead>
+          <tr>
+            {% for col in df_head.0.keys %}
+            <th>{{ col }}</th>
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in df_head %}
+          <tr>
+            {% for val in row.values %}
+            <td>{{ val }}</td>
+            {% endfor %}
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <h2>Missing Values</h2>
+      <div class="missing-values-container">
+        <div class="missing-values-box">
+          <p>{{ missing_values }}</p>
+        </div>
+      </div>
+
+      <h1>Scatter Plots</h1>
+      <div class="plot-container">
+        <div>
+          <h3>Total Bill vs Tip</h3>
+          <img
+            src="data:image/png;base64,{{ total_bill_tip_plot_uri }}"
+            alt="Scatter Plot: Total Bill vs Tip"
+          />
+        </div>
+        <div>
+          <h3>Sex vs Tip</h3>
+          <img
+            src="data:image/png;base64,{{ sex_tip_plot_uri }}"
+            alt="Scatter Plot: Sex vs Tip"
+          />
+        </div>
+      </div>
+      <div class="plot-container">
+        <div>
+          <h3>Smoker vs Tip</h3>
+          <img
+            src="data:image/png;base64,{{ smoker_tip_plot_uri }}"
+            alt="Scatter Plot: Smoker vs Tip"
+          />
+        </div>
+        <div>
+          <h3>Day vs Tip</h3>
+          <img
+            src="data:image/png;base64,{{ day_tip_plot_uri }}"
+            alt="Scatter Plot: Day vs Tip"
+          />
+        </div>
+      </div>
+
+      <!-- Actual vs Predicted Comparison Table -->
+      <h2>Actual vs Predicted Tip Values</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Actual Tip</th>
+            <th>Predicted Tip</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in comparison %}
+          <tr>
+            <td>{{ row.Actual }}</td>
+            <td>{{ row.Predicted }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <!-- Metrics Display -->
+      <h2>Model Performance</h2>
+      <div class="metrics-container">
+        <div class="metric-box mse-box">
+          <h3><i class="fas fa-calculator"></i> Mean Squared Error (MSE)</h3>
+          <p>{{ mse }}</p>
+        </div>
+        <div class="metric-box r2-box">
+          <h3><i class="fas fa-chart-line"></i> R-squared (R2)</h3>
+          <p>{{ r2 }}</p>
+        </div>
+      </div>
+
+      <!-- Download Button -->
+      <div class="footer">
+        <form method="POST">
+          {% csrf_token %}
+          <button type="submit" class="btn-download">
+            Download Regression Results CSV
+          </button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
